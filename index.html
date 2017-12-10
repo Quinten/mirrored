@@ -3,20 +3,49 @@
     <head>
         <title>Mirrored</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            body {
+                margin: 0;
+                overflow: hidden;
+            }
+            video, #buffer {
+                display: none;
+            }
+        </style>
     </head>
     <body>
-        <video width="320" height="240"></video>
+        <video width="40" height="24"></video>
+        <canvas width="40" height="24" id="buffer"></canvas>
+        <canvas id="canvas"></canvas>
         <script>
 
-var constraints = { audio: false, video: { width: 320, height: 240 } };
+var constraints = { audio: false, video: { width: 40, height: 24 } };
+var video = document.querySelector('video');
 
 navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
-    var video = document.querySelector('video');
     video.srcObject = mediaStream;
     video.onloadedmetadata = function(e) {
         video.play();
     };
 }).catch(function(err) { console.log(err.name + ": " + err.message); });
+
+var buffer = document.querySelector('#buffer').getContext('2d');
+
+var canvas = document.querySelector('#canvas');
+var context = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function step(timestamp) {
+
+    buffer.drawImage(video, 0, 0);
+    var pixelData = buffer.getImageData(20, 20, 1, 1).data;
+    var color = ((pixelData[0] << 16) | (pixelData[1] << 8) | pixelData[2]).toString(16);
+    //console.log(color);
+    window.requestAnimationFrame(step);
+}
+
+window.requestAnimationFrame(step);
 
         </script>
   </body>

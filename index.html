@@ -4,19 +4,34 @@
         <title>Mirrored</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
+            html {
+                height: 100%;
+            }
             body {
                 margin: 0;
                 overflow: hidden;
+                background: #000;
+                position: relative;
+                height: 100%;
             }
             video, #buffer {
                 display: none;
+            }
+            #canvas {
+                width: 800px;
+                height: 480px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -240px;
+                margin-left: -400px;
             }
         </style>
     </head>
     <body>
         <video width="80" height="48"></video>
         <canvas width="80" height="48" id="buffer"></canvas>
-        <canvas id="canvas"></canvas>
+        <canvas width="800" height="480" id="canvas"></canvas>
         <script>
 
 var constraints = { audio: false, video: { width: 80, height: 48 } };
@@ -33,8 +48,8 @@ var buffer = document.querySelector('#buffer').getContext('2d');
 
 var canvas = document.querySelector('#canvas');
 var context = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+//canvas.width = window.innerWidth;
+//canvas.height = window.innerHeight;
 
 var morph = 10;
 

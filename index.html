@@ -46,7 +46,7 @@ function step(timestamp) {
         var x = Math.floor(Math.random() * 80);
         var y = Math.floor(Math.random() * 48);
         var pixelData = buffer.getImageData(x, y, 1, 1).data;
-        var color = ((pixelData[0] << 16) | (pixelData[1] << 8) | pixelData[2]).toString(16);
+        var color = ((pixelData[1] << 16) | (pixelData[2] << 8) | pixelData[0]).toString(16);
         if (color.length == 6) {
             context.fillStyle = '#' + color;
             //context.fillRect(x * 10 - 5, y * 10 - 5, 20, 20);

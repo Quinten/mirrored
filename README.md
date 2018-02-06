@@ -2,8 +2,8 @@
 
 ## webcam to html5 canvas experiment
 
-Demo 1:
-Demo 2:
+Demo 1: https://quinten.github.io/mirrored/demo-1.html  
+Demo 2: https://quinten.github.io/mirrored/demo-2.html
 
 ### About this demo
 

@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>Mirrored 2</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                overflow: hidden;
+                background: #000;
+                position: relative;
+                height: 100%;
+            }
+            video, #buffer {
+                display: none;
+            }
+            #canvas {
+                width: 800px;
+                height: 480px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                margin-top: -240px;
+                margin-left: -400px;
+            }
+        </style>
+    </head>
+    <body>
+        <video width="80" height="48"></video>
+        <canvas width="80" height="48" id="buffer"></canvas>
+        <canvas width="800" height="480" id="canvas"></canvas>
+        <script>
+
+var constraints = { audio: false, video: { width: 80, height: 48 } };
+var video = document.querySelector('video');
+
+navigator.mediaDevices.getUserMedia(constraints).then(function(mediaStream) {
+    video.srcObject = mediaStream;
+    video.onloadedmetadata = function(e) {
+        video.play();
+    };
+}).catch(function(err) { console.log(err.name + ": " + err.message); });
+
+var buffer = document.querySelector('#buffer').getContext('2d');
+
+var canvas = document.querySelector('#canvas');
+var context = canvas.getContext('2d');
+//canvas.width = window.innerWidth;
+//canvas.height = window.innerHeight;
+
+var morphX = 1;
+var morphY = -1;
+var velocX = 0.04;
+var velocY = -0.03;
+
+function step(timestamp) {
+
+    buffer.drawImage(video, 0, 0);
+
+    morphX += velocX;
+    if (morphX > 1 || morphX < -1) {
+        velocX = -velocX;
+    }
+
+    morphY += velocY;
+    if (morphY > 1 || morphY < -1) {
+        velocY = -velocY;
+    }
+
+    for (var x = 0; x < 80; x++) {
+        for (var y = 0; y < 48; y++) {
+            var pixelData = buffer.getImageData(x, y, 1, 1).data;
+            var color = ((pixelData[2] << 16) | (pixelData[0] << 8) | pixelData[1]).toString(16);
+            if (color.length == 6) {
+                context.fillStyle = '#' + color;
+                if (x > 40) {
+                    var scaleX = 10 + (8 * morphX);
+                    var _x = 40 * (10 - (8 * morphX)) + (x - 40) * scaleX;
+                } else {
+                    var scaleX = 10 - (8 * morphX);
+                    var _x = x * scaleX;
+                }
+                if (y > 24) {
+                    var scaleY = 10 + (8 * morphY);
+                    var _y = 24 * (10 - (8 * morphY)) + (y - 24) * scaleY;
+                } else {
+                    var scaleY = 10 - (8 * morphY);
+                    var _y = y * scaleY;
+                }
+                var w = scaleX;
+                var h = scaleY;
+                context.fillRect(_x, _y, w, h);
+            }
+        }
+    }
+    window.requestAnimationFrame(step);
+}
+
+window.requestAnimationFrame(step);
+
+        </script>
+  </body>
+</html>
